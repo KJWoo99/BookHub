@@ -26,41 +26,27 @@
 - OpenAI API
 
 
-## 🚀 Key Features
+## 🌟 Key Features
 
-### 1. Login Page
-Log in to Book Hub by entering your ID and password. New users can create an account using the registration feature.
+<table>
+  <tr>
+    <td align="center"><img src="https://github.com/user-attachments/assets/db85f418-33fb-4d96-bba4-c00757cfa3c6" width="200" /><br><b>Login Page</b></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/a170594d-d5fd-4833-bcb6-a1703d5580c1" width="200" /><br><b>AI-Powered Book Recommendations and Summaries</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="https://github.com/user-attachments/assets/ef6fd492-67bd-4007-8f17-c958bfbd6808" width="200" /><br><b>Recently Added</b></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/5d737005-708d-46db-b56e-b8c4d93b68d8" width="200" /><br><b>Popular Books</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="https://github.com/user-attachments/assets/48e91a27-9983-42e8-9bed-46c7bef83c6b" width="200" /><br><b>Book Details</b></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/e9ed9da9-5317-4ebf-87db-d17c084d2545" width="200" /><br><b>My Page</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="https://github.com/user-attachments/assets/ff5ef701-7c57-488e-b346-806dcba3bb05" width="200" /><br><b>Information Management</b></td>
+    <td></td>
+  </tr>
+</table>
 
-![Login Page](https://github.com/user-attachments/assets/dbccc93f-f268-4531-9c39-c388ad6b5522)
-
-<details>
-  <summary>🔍 See more details about key features</summary>
-
-  ### 2. AI-Powered Book Recommendations and Summaries
-  Book Hub uses AI to recommend books based on the keywords you provide and offers summaries of those books.
-
-  ![AI Recommendations](https://github.com/user-attachments/assets/093bf5f8-30cf-44a6-a13f-22af9841d9d0)
-
-  ### 3. Recently Added and Popular Books
-  Explore recently added books and the latest popular books in the libraries. Keep up with the freshest and most trending reads!
-
-  ![Recently Added Books](https://github.com/user-attachments/assets/de86651e-918c-41c5-9a22-12c55c921df2)
-  ![Popular Books](https://github.com/user-attachments/assets/18ddd00c-26dd-46f3-ac0d-1a4c5553dc47)
-
-  ### 4. Book Details
-  Get detailed information about specific books, including availability status across various libraries. Easily locate and check the status of your books.
-
-  ![Book Details](https://github.com/user-attachments/assets/d44341ea-d64d-4190-88f4-0113a8f20ad5)
-
-  ### 5. My Page
-  Manage your personal information and view your recently searched books. Update personal details and keep track of your reading history.
-
-  ![My Page](https://github.com/user-attachments/assets/7b9fa1a0-3a25-482d-a9ee-b27a68e023b0)
-
-  ### 6. Information Management
-  Update your email, phone number, address, and other personal information on My Page to ensure your details are always current.
-
-  ![Information Management](https://github.com/user-attachments/assets/38623ea0-5feb-4569-84cd-ccad59dca583)
 
 </details>
 
