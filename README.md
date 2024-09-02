@@ -1,6 +1,6 @@
 # 📚 Book Hub
 
-Welcome to **Book Hub**! Our web application integrates book information from major public libraries in Seoul—Gangnam, Gangdong, Mapo, and Yeongdeungpo. With Book Hub, you can easily search for book titles, check their availability, get book summaries with AI, and manage your recently searched books.
+**Book Hub** is a web application that provides integrated access to book information from major public libraries in **Seoul** (Gangnam-gu, Gangdong-gu, Mapo-gu, Yeongdeungpo-gu). Users can **search for book titles** and immediately check the list of libraries that hold the book and its **availability status**. The **AI search feature** also allows users to easily check the **content and summary** of the books. Additionally, the user's **recent search history** can be managed through the **My Page** feature.
 
 ## 🚀 Key Features
 
