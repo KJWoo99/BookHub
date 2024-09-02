@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css">
+    <title>Find Id</title>
+    <script src="../app.js"></script>
+    <style>
+        .find-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 20px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            background-color: white;
+        }
+
+        .find-container h3 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .find-container input {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: white;
+        }
+
+        .pw-finder {
+            border-top: 1px dashed #ccc;
+        }
+
+        .find-container button {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #dddddd;
+            font-weight: bold;
+        }
+
+        .find-container button:hover {
+            cursor: pointer;
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="find-container">
+        <div class="id-finder">
+            <h3>아이디 찾기</h3>
+            <form id="idFinderForm" onsubmit="event.preventDefault(); findMyID();">
+                <table>
+                    <tr>
+                        <td><input type="text" id="myname" name="name" placeholder="이름" required></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="myhp" name="hp" placeholder="전화번호" required></td>
+                    </tr>
+                    <tr>
+                        <td><button type="submit">아이디 찾기</button></td>
+                    </tr>            
+                </table>
+            </form>
+            <div class="resultArea">
+                <p><span id="result"></span></p>
+            </div>
+        </div>
+        <div class="pw-finder">
+            <h3>비밀번호 재설정</h3>
+            <form id="pwFinderForm" onsubmit="event.preventDefault();">
+                <p><input type="text" id="userid" name="userid" placeholder="아이디" required></p>
+                <p><input type="text" id="name" name="name" placeholder="이름" required></p>
+                <p><input type="text" id="hp" name="hp" placeholder="전화번호" required></p>
+                <input type="text" id="otp" name="otp" placeholder="인증번호">
+                <button type="button" onclick="sendOTP()">인증 요청</button><br>
+                <div id="otpStatusWrapper">
+                    <span id="otpStatusMessage"></span>
+                </div>
+                <p><input type="password" id="newPassword" name="newPassword" placeholder="새 비밀번호" required></p>
+                <p><input type="password" id="confirmPassword" name="confirmPassword" placeholder="새 비밀번호 확인" required></p>
+                <button type="submit" id="signupButton" disabled>비밀번호 변경</button>
+                <div id="resultMessageWrapper">
+                    <span id="resultMessage"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+    <nav class="tab-bar">
+        <a href="../index.html" class="active"><button id="home"></button></a>
+        <a href="../ai.html"><button id="ai"></button></a>
+        <a href="../search.html"><button id="search"></button></a>
+        <a href="../my.html"><button id="settings"></button></a>
+    </nav>
+    <script>
+        function findMyID() {
+            const name = document.getElementById('myname').value;
+            const hp = document.getElementById('myhp').value;
+
+            fetch('http://localhost:4000/auth/findid', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, hp })
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('네트워크 오류(자료가 없습니다)');
+                } 
+                return res.json();
+            })
+            .then(data => {
+                if (data.id) {
+                    document.getElementById('result').textContent = `회원님의 아이디는 ${data.id}입니다`;
+                } else {
+                if(data.message) {
+                    document.getElementById('result').textContent = data.message;
+                } else {
+                    document.getElementById('result').textContent = '일치하는 정보가 없습니다.';
+                }
+            }
+            })
+            .catch(error => {
+                if (error.message) {
+                    document.getElementById('result').textContent = '일치하는 정보가 없습니다..';
+                } else {
+                    console.error('Error:', error);
+                }
+                
+            });
+        }
+
+        function sendOTP() {
+            const hp = document.getElementById('hp').value;
+
+            fetch('http://localhost:4000/otp/sendOTP', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `hp=${hp}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(`인증번호가 전송되었습니다: ${data}`);
+            })
+            .catch(error => {
+                console.error('Error sending OTP:', error);
+                alert('인증번호를 전송하는 데 실패했습니다.');
+            });
+        }
+
+        document.getElementById('otp').addEventListener('input', function() {
+            const otpInput = this.value.trim();
+            const signupButton = document.getElementById('signupButton');
+            const otpStatusMessage = document.getElementById('otpStatusMessage');
+
+            if (otpInput.length === 6) {
+                const hp = document.getElementById('hp').value;
+                fetch('http://localhost:4000/otp/verifyOTP', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `hp=${hp}&otp=${otpInput}`
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        signupButton.removeAttribute('disabled');
+                        otpStatusMessage.textContent = '인증이 완료되었습니다.';
+                        otpStatusMessage.style.color = 'green';
+                    } else {
+                        otpStatusMessage.textContent = '인증번호가 올바르지 않습니다. 인증번호를 확인하세요.';
+                        otpStatusMessage.style.color = 'red';
+                        signupButton.setAttribute('disabled', 'disabled');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error verifying OTP:', error);
+                    otpStatusMessage.textContent = '인증 도중 오류가 발생했습니다.';
+                    otpStatusMessage.style.color = 'red';
+                    signupButton.setAttribute('disabled', 'disabled');
+                });
+            } else {
+                signupButton.setAttribute('disabled', 'disabled');
+                otpStatusMessage.textContent = '';
+            }
+        });
+    </script>
+</body>
+</html>

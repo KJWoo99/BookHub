@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Detail</title>
+    <link rel="stylesheet" href="./styles/style.css">
+    <style>
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border: 2px solid #ced4da;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="bookDetail"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchKey = urlParams.get('searchKey');
+
+        async function fetchBookDetail(searchKey) {
+            try {
+
+                const response = await fetch(`http://localhost:4000/book/detail/${searchKey}`);
+                const data = await response.text();
+                const bookDetailElement = document.getElementById('bookDetail');
+                bookDetailElement.innerHTML = data;
+            } catch (error) {
+                console.error('Error fetching book detail:', error);
+            }
+        }
+
+        window.onload = function () {
+            fetchBookDetail(searchKey);
+        };
+    </script>
+</body>
+</html>

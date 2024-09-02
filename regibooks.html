@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles/style.css">
+    <style>
+        #regbooks-container {
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 20px;
+        }
+
+        #isbn-input {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        #btn-regist {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="regbooks-container">
+        <form id="reg-books">
+            <input type="text" id="isbn-input" placeholder="isbn을 입력하세요.">
+            <button type="submit" id="btn-regist">등록</button>
+        </form>
+    </div>
+</body>
+<script>
+    
+    document.addEventListener('click', function(e){
+        if(e.target.id === 'btn-regist'){
+            e.preventDefault();
+            const isbn = document.getElementById('isbn-input').value;
+            fetch('http://localhost:4000/store', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'isbn': isbn
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(err => {
+                console.error(err);
+            })
+        }
+    })
+</script>
+</html>

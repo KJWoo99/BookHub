@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>도서 검색</title>
+  <link rel="stylesheet" href="./styles/style.css">
+  <link rel="stylesheet" href="./styles/search-style.css">
+  <link rel="stylesheet" href="./styles/top100-style.css">
+  <link rel="stylesheet" href="./styles/newbook-style.css">
+</head>
+<body>
+  <div class="mains">
+    <div class="book-search">
+      <div class="book-search-title">
+        <form id="searchForm">
+          <div class="book-search-wrapper">
+            <input type="text" id="bookName" name="bookName" placeholder="찾고 싶은 책을 입력하세요:)">
+            <button type="submit" class="btnSearch"></button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <div id="newbook-container">
+      <input type="hidden" id="newbookPageInput" value="1">
+      <div id="newbook-section">
+        <table>
+          <tr><h2>최근 들어온 책</h2></tr>
+          <tr>
+            <th class="newbook-label">No</th>
+            <th class="newbook-label">도서명</th>
+            <th class="newbook-label">작가</th>
+            <th class="newbook-label">링크</th>
+          </tr>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+      <div class="newbook-pagination" id="newbook-pagination"></div>
+    </div>
+
+    <div class="container">
+      <div class="table-group1" id="bookTable"></div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <div id="loadingMessage">
+      <div class="spinner"></div>
+      Loading, please wait...
+    </div>
+    <div id="content" style="display:none;">
+      <!-- 실제 콘텐츠가 여기에 들어갑니다 -->
+      <p>This is the main content of the page.</p>
+    </div>
+
+    <nav class="tab-bar">
+      <a href="index.html" class="active"><button id="home"></button></a>
+      <a href="ai.html"><button id="ai"></button></a>
+      <a href="search.html"><button id="search"></button></a>
+      <a href="my.html"><button id="settings"></button></a>
+    </nav>
+
+    <div id="results"></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Simulate a delay for loading
+        setTimeout(function() {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        }, 2000); // 2초 후에 로딩 메시지를 숨기고 실제 콘텐츠를 표시
+
+        // 초기화 함수 호출
+        initialize();
+      });
+
+      // 로딩 메시지를 표시하는 함수
+      function showLoadingMessage() {
+          const loadingMessage = document.getElementById('loadingMessage');
+          loadingMessage.style.display = 'block';
+      }
+
+      // 로딩 메시지를 숨기는 함수
+      function hideLoadingMessage() {
+          const loadingMessage = document.getElementById('loadingMessage');
+          loadingMessage.style.display = 'none';
+      }
+
+      function hideBookTable() {
+          const bookTable = document.getElementById('bookTable');
+          const pagination = document.getElementById('pagination');
+          const newBookTable = document.getElementById('newbook-container');
+          bookTable.style.display = 'none';
+          pagination.style.display = 'none';
+          newBookTable.style.display = 'none';
+      }
+
+      // 검색 폼
+      const form = document.getElementById('searchForm');
+      form.addEventListener('submit', async (e) => {
+          e.preventDefault(); // 기본 동작인 폼 제출 방지
+          showLoadingMessage(); // 로딩 메시지 표시
+          const bookName = document.getElementById('bookName').value;
+          try {
+              const response = await fetch(`http://localhost:4000/book/search/${encodeURIComponent(bookName)}`);
+              const data = await response.json();
+              displayResults(data);
+          } catch (error) {
+              console.error('Error occurred:', error);
+              hideLoadingMessage(); // 에러 발생 시 로딩 메시지 숨김
+          }
+      });
+
+      // 결과를 화면에 표시하는 함수
+      function displayResults(results) {
+          const resultsContainer = document.getElementById('results');
+          resultsContainer.innerHTML = ''; // 이전 결과 지우기
+          hideLoadingMessage(); // 결과 표시 시 로딩 메시지 숨김
+          hideBookTable();
+
+          Object.keys(results).forEach(library => {
+              const libraryResults = results[library];
+              if (libraryResults.length > 0) {
+                  const libraryHeading = document.createElement('h2');
+                  libraryHeading.textContent = library;
+                  resultsContainer.appendChild(libraryHeading);
+
+                  const list = document.createElement('div');
+                  libraryResults.forEach(result => {
+                      const listItem = document.createElement('div');
+                      listItem.className = 'book-container';
+                      listItem.innerHTML = `
+                          <div class="book-img">
+                              <img src="${result.imgElement}" onerror="this.onerror=null; this.src='./images/book-default.png';">
+                          </div>
+                          <div class="book-info">
+                              <li id="book-title">${result.titleElement}</li>
+                              <li>저자: ${result.authorElement}</li>
+                              <li>${result.siteElement}</li>
+                              <li>설명: ${result.txtElement}</li>
+                              <div class="btn-bookinfo">
+                              <li><button id="btn-place-info" class="btnSrch" onclick="handleLocation('${result.siteElement}')">도서관위치</button>
+                              <li><button id="btn-book-info" class="btnSrch" onclick="handleBookDetail('${result.titleElement}', '${result.data1Element}')">세부 정보</button></li>
+                              </div>
+                          </div>
+                      `;
+                      list.appendChild(listItem);
+                  });
+
+                  resultsContainer.appendChild(list);
+              } else {
+                  const noResultsMessage = document.createElement('p');
+                  noResultsMessage.textContent = `${library}에서는 검색 결과가 없습니다.`;
+                  resultsContainer.appendChild(noResultsMessage);
+              }
+          });
+      }
+
+      function handleLocation(siteElement) {
+          const url = `https://map.naver.com/p/search/${siteElement}?c=15.00,0,0,0,dh`;
+          window.open(url, '_blank');
+      }
+
+      function loadNewBookData() {
+          const page = document.getElementById('newbookPageInput').value;
+          fetch(`http://localhost:4000/book/scrape?page=${page}&pageSize=5`)
+              .then(response => response.json())
+              .then(data => {
+                  const tableBody = document.getElementById('tableBody');
+                  tableBody.innerHTML = '';
+                  data.data.forEach(item => {
+                      const row = document.createElement('tr');
+                      const authorRaw = String(item.author);
+                      const author = authorRaw.replace(' 지음', '').trim();
+                      row.innerHTML = `
+                          <td id="item-num">${item.num}</td>
+                          <td id="item-title">${item.title}</td>
+                          <td id="item-author">${author}</td>
+                          <td><a href="${item.href}" target="_blank">보기</a></td>
+                      `;
+                      tableBody.appendChild(row);
+                  });
+                  updateNewBookPagination(data.page, data.totalPages);
+              })
+              .catch(error => console.error('데이터 가져오기 오류:', error));
+      }
+
+      function updateNewBookPagination(current, totalPages) {
+          const pagination = document.getElementById('newbook-pagination');
+          pagination.innerHTML = '';
+
+          for (let i = 1; i <= totalPages; i++) {
+              const button = document.createElement('button');
+              button.textContent = i;
+              button.classList.add('nav-btn');
+              if (i === current) {
+                  button.classList.add('active');
+              }
+              button.onclick = () => {
+                  document.getElementById('newbookPageInput').value = i;
+                  loadNewBookData();
+              };
+              pagination.appendChild(button);
+          }
+      }
+
+      function fetchBooks(pageNumber) {
+          fetch(`http://localhost:4000/book/books?page=${pageNumber}`)
+              .then(response => response.text())
+              .then(data => {
+                  document.getElementById('bookTable').innerHTML = data;
+                  updatePagination(pageNumber);
+              })
+              .catch(error => console.error('Error fetching books:', error));
+      }
+
+      function updatePagination(currentPage) {
+          const paginationContainer = document.getElementById('pagination');
+          paginationContainer.innerHTML = '';
+
+          const totalPages = 5;
+          for (let i = 1; i <= totalPages; i++) {
+              const button = document.createElement('button');
+              button.textContent = i;
+              button.addEventListener('click', () => fetchBooks(i));
+              if (i === currentPage) {
+                      button.classList.add('active');
+                  }
+                  paginationContainer.appendChild(button);
+              }
+          }
+      
+
+      function initialize() {
+          loadNewBookData();
+          fetchBooks(1);
+      }
+
+      // 세부 정보 보기 버튼 클릭 시 처리 함수
+      async function handleBookDetail(title, data1Element) {
+          // Existing functionality
+          let searchKey;
+          if (data1Element && data1Element.startsWith("ISBN: ")) {
+              const isbn = data1Element.substring(6);
+              searchKey = encodeURIComponent(isbn);
+          } else {
+              searchKey = encodeURIComponent(title);
+          }
+          // searchKey를 조회하여 DB에 저장
+          await fetch('http://localhost:4000/book/store', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  'isbn': searchKey
+              })
+          })
+          .then(res => res.json())
+          .then(data => {
+              console.log(data);
+          })
+          .catch(err => {
+              console.error(err);
+          });
+
+          // 새 브라우저를 열어서 보여주기 
+          const bookId = `http://127.0.0.1:5500/detail.html?searchKey=${searchKey}`;
+          window.open(bookId, '_blank');
+
+          // localstorage에서 token 가져오기
+          var token = localStorage.getItem('token');
+          if (!token) {
+              console.error('토큰이 없습니다. 로그인하세요.');
+              return;
+          }
+
+          fetch('http://localhost:4000/book/update', {
+              method: 'POST',
+              headers: {
+                  'Authorization': `Bearer ${token}`, // JWT 토큰을 요청 헤더에 추가
+                  'Content-Type': 'application/json' // 올바른 콘텐츠 타입 설정
+              },
+              body: JSON.stringify({
+                  "recentBookURL": bookId
+              })
+          })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('요청 실패: ' + response.status + ' ' + response.statusText);
+              }
+              return response.json();
+          })
+          .then(data => {
+              displayURLPreviews(data.recentBooks);
+          })
+          .catch(error => {
+              console.error('요청 실패:', error);
+          });
+      }
+
+      // 설정 버튼 클릭 이벤트 핸들러
+      const settingsButton = document.getElementById("settings");
+      settingsButton.addEventListener("click", () => {
+          const userToken = localStorage.getItem("token"); // 로컬 스토리지에서 토큰 가져오기
+          if (userToken) {
+              // 토큰이 있는 경우
+              window.location.href = 'http://127.0.0.1:5500/my.html'; // my.html로 이동
+          } else {
+              // 토큰이 없는 경우
+              window.location.href = 'http://127.0.0.1:5500/index.html'; // login.html로 이동
+          }
+      });
+    </script>
+  </div>
+</body>
+</html>
+
+                 

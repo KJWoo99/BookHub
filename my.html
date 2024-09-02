@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/style.css">
+    <title>My Page</title>
+    <style>
+        .login-message {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        .login-message button {
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            background-color: #dfdfdf;
+            color: #444;
+            opacity: 100%;
+            border-radius: 4px;
+            padding: 8px;
+            font-weight: bold;
+        }
+
+        .login-message button:hover {
+            background-color: #ececec;
+        }
+
+        .my-container {
+            width: 80%;
+            margin: 0 auto;
+        }        
+        .my-container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .my-container h1 {
+            font-size: 20px;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .my-content {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        #modify {
+            position: absolute;
+            font-size: 11px;
+            bottom: 0px;
+            right: 110px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        #logout {
+            position: absolute;
+            font-size: 11px;
+            bottom: 0px;
+            right: 55px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        #quit {
+            position: absolute;
+            font-size: 11px;
+            bottom: 0px;
+            right: 0px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        .info-frame {
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .info-frame div {
+            background-color: white;
+        }
+
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .book-item {
+            display: flex;
+            /* justify-content: space-between; */
+            align-items: center;
+            /* border-bottom: 1px dotted #ccc; */
+            padding: 5px;
+        }
+
+        .book-info {
+            display: flex;
+            flex-direction: column;
+            margin-left: 5px;
+        }
+
+        .book-title {
+            font-weight: bold;
+        }
+
+        .book-image {
+            width: 100px;
+            height: 130px;
+            margin-right: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .book-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .book-summary {
+            /* display: none; */
+            /* position: absolute; */
+            top: 100%;
+            left: 0;
+            width: 300px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .show-summary .book-summary {
+            display: block;
+        }
+
+        .book-list {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dotted #ccc;
+            padding: 5px;
+        }
+
+        .book-list div:first-child {
+            flex: 1; /* 왼쪽 요소를 충분히 공간을 차지하게 함 */
+        }
+
+        .book-list div:last-child {
+            display: flex;
+            gap: 10px; /* 오른쪽 요소 간의 간격 설정 */
+            align-items: center;
+            margin-left: 5px;
+        }
+
+        .info-btn {
+            border: 1px solid #ccc;
+            font-size: 11px;
+            border-radius: 4px;
+            padding: 3px;
+        }
+
+        .myinfo-btn:hover {
+            background-color: #d6d6d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="my-container" id="my-container">
+        <h1>마이페이지</h1>
+        <div class="info-frame" id="my-info">
+            <div class="info-title">
+                <p><span id="name"></span> 님, 환영합니다 :)</p>
+            </div>
+            <div class="my-content">
+                <div>
+                <p>이메일 : <span id="email"></p>
+                <p>휴대폰 : <span id="hp"></span></p>
+                </div>
+                <div>
+                    <a href="http://127.0.0.1:5500/mymodify.html"><button class="myinfo-btn" id="modify">정보수정</button></a>
+                    <button class="myinfo-btn" id="logout" name="logout">로그아웃</button>
+                    <button class="myinfo-btn" id="quit" name="quit">회원탈퇴</button>
+                </div>
+            </div>
+        </div>
+        <div class="info-frame" id="recent-info">
+            <div class="info-title">
+                <p><a href="http://127.0.0.1:5500/view.html" style="color: inherit; text-decoration: none;" target="_blank">최근 본 목록</a></p>
+            </div>
+            <div class="recent-content">
+            </div>
+        </div>
+    </div>
+    <nav class="tab-bar">
+        <a href="index.html" class="active"><button id="home"></button></a>
+        <a href="ai.html"><button id="ai"></button></a>
+        <a href="search.html"><button id="search"></button></a>
+        <a href="my.html"><button id="settings"></button></a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+
+            if (token) {
+                fetch('http://localhost:4000/auth/getuserinfo', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('name').innerText = data.name;
+                    document.getElementById('email').innerText = data.email;
+                    document.getElementById('hp').innerText = data.hp; 
+                })
+                .catch(error => console.error('사용자 정보를 가져오는 데 실패했습니다:', error));
+            } else {
+                document.getElementById('my-container').style.display = 'none';
+                const loginMessage = document.createElement('div');
+                loginMessage.className = 'login-message';
+                loginMessage.innerHTML = `
+                    <div class="login-container" id="login-container">
+                        <h3>로그인을 먼저 해 주세요 :)</h3>
+                        <a href="index.html"><button type="submit">메인으로 돌아가기</button></a>
+                    </div>                  
+                `;
+                document.body.appendChild(loginMessage);
+            }
+        });
+
+
+
+//-----------------------------------------------------------------------------------------------------------
+// 최근 본 목록 불러오기 (책 제목과 이미지, 작가만 표시)
+        async function fetchRecentBooks() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch("http://localhost:4000/auth/getmybooks", {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                console.log('response:', response)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('data:', data)
+                return data || [];
+            } catch (error) {
+                console.error('최근 본 목록을 불러오는 데 실패했습니다:', error);
+                return [];
+            }
+        }
+
+        function createBooks(book) {
+            const bookItem = document.createElement('div');
+            bookItem.className = 'book-item';
+
+            if (book.image) {
+                const bookImage = document.createElement('img');
+                bookImage.className = 'book-image';
+                bookImage.src = book.image;
+                bookItem.appendChild(bookImage);
+            }
+
+            const bookInfo = document.createElement('div');
+            bookInfo.className = 'book-info';
+
+            const bookTitle = document.createElement('div');
+            bookTitle.className = 'book-title';
+            bookTitle.textContent = book.title;
+            bookInfo.appendChild(bookTitle);
+
+            const bookAuthor = document.createElement('div');
+            bookAuthor.className = 'book-author';
+            bookAuthor.textContent = `by ${book.author}`;
+            bookInfo.appendChild(bookAuthor);
+
+            // const bookSummary = document.createElement('div');
+            // bookSummary.className = 'book-summary';
+            // bookSummary.textContent = book.summary || '줄거리 정보가 없습니다.';
+            // bookInfo.appendChild(bookSummary);
+
+            // const showSummaryButton = document.createElement('button');
+            // showSummaryButton.textContent = '줄거리보기';
+            // showSummaryButton.onclick = () => {
+            //     bookInfo.classList.toggle('show-summary');
+            // };
+            // bookInfo.appendChild(showSummaryButton);
+
+            bookItem.appendChild(bookInfo);
+
+            return bookItem;
+        }
+
+        async function displayRecentBooks() {
+            const recentContent = document.querySelector('.recent-content');
+            const data = await fetchRecentBooks();
+            console.log('display data:', data)
+            if (data && data.validBooksInfo && data.validBooksInfo.length > 0) { 
+                data.validBooksInfo.forEach(book => { 
+                    const bookElement = createBooks(book); 
+                    recentContent.appendChild(bookElement);
+                });
+            } else {
+                recentContent.textContent = '최근 본 목록이 없습니다.';
+            }
+        }
+        window.onload = displayRecentBooks;
+
+//-----------------------------------------------------------------------------------------------------------
+// 로그아웃
+
+        document.getElementById('logout').addEventListener('click', function() {
+            // 쿠키 제거
+            localStorage.removeItem('token');
+            // 새로운 URL로 페이지 이동
+            window.location.href = 'http://127.0.0.1:5500/index.html';
+        });
+
+
+//-----------------------------------------------------------------------------------------------------------
+// 회원탈퇴
+
+        document.getElementById('quit').addEventListener('click', function() {
+            var confirmation = confirm("정말로 탈퇴하시겠습니까?");
+
+            if (confirmation) {
+                const token = localStorage.getItem('token');
+                fetch('http://localhost:4000/auth/quit', {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('탈퇴에 실패했습니다. 다시 시도해 주세요.');
+                    }
+                    // 로컬스토리지 제거
+                    localStorage.removeItem('token');
+                    // 새로운 URL로 페이지 이동
+                    window.location.href = 'http://127.0.0.1:5500/index.html';
+                })
+                .catch(error => console.error('Error quitting:', error));
+            } else {
+                // 아니요를 선택한 경우 대화 상자 닫기
+                // 아무런 동작 필요 없음
+            }
+        });
+    </script>
+</body>
+</html>

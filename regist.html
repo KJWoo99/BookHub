@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/style.css">
+    <style>
+        .reg-container {
+            width: 70%;
+            margin: 0 auto;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+        }
+
+        #regform label {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .reg-container h3 {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkId {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .otp {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-group-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        #regform button {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #b6b6b6;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-submits {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button:disabled {
+            background-color: #d4d4d4;
+            cursor: not-allowed;
+        }
+
+        input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        #otpStatusWrapper {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="reg-container">
+        <h3>회원가입</h3>
+        <form id="regform">
+            <input type="hidden" name="ssncheck" id="ssncheck" value="n">
+            <div class="form-group">
+                <label for="userid">아이디</label>
+                <div class="checkId">
+                <input type="text" name="userid" id="userid" maxlength="20">
+                <button type="button" id="checkButton">중복확인</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="userpw">비밀번호</label>
+                <input type="password" name="userpw" id="userpw" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label for="userpw_re">비밀번호 확인</label>
+                <input type="password" name="userpw_re" id="userpw_re" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label for="name">이름</label>
+                <input type="text" name="name" id="name" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label for="hp">휴대폰번호</label>
+                <input type="text" name="hp" id="hp" placeholder="'-' 제외하고 입력" maxlength="20" required>
+                <div class="otp">
+                <input type="text" id="otp" placeholder="인증번호" required>
+                <button type="button" id="otpButton" >인증요청</button>
+                </div>
+            </div>
+            <div id="otpStatusWrapper">
+                <span id="otpStatusMessage"></span>
+            </div>
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="text" name="email" id="email" maxlength="50">
+            </div>
+            <div class="form-group">
+                <label for="ssn">주민등록번호</label>
+                <input type="text" name="ssn" id="ssn" placeholder="주민등록번호 앞자리" maxlength="6">
+            </div>
+            <div class="form-group">
+                <label for="address">주소</label>
+                <input type="text" name="address" id="address" placeholder="예)서울시 강남구 서초동">
+            </div>
+            <div class="btn-submits">
+           <a href="./index.html"><button>돌아가기</button></a> <button id="signupButton" disabled>회원가입</button>
+            <!-- <a href="./index2.html"><button>돌아가기</button></a> <button id="signupButton">회원가입</button> -->
+            </div>
+        </form>
+    </div>
+    <nav class="tab-bar">
+        <a href="index.html" class="active"><button id="home"></button></a>
+        <a href="ai.html"><button id="ai"></button></a>
+        <a href="search.html"><button id="search"></button></a>
+        <a href="my.html"><button id="settings"></button></a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkUserId = async () => {
+                const userid = document.getElementById('userid').value;
+                try {
+                    const response = await fetch(`http://localhost:4000/auth/checkid`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userid })
+                    });
+                    const data = await response.json();
+                    console.log('data', data.ok)
+                    if (data.ok) {
+                        alert('사용 가능한 아이디입니다.');
+                        document.getElementById('otpButton').removeAttribute('disabled');
+                    } 
+                    else {
+                        alert('사용할 수 없는 아이디입니다.');
+                    }
+                } catch (error) {
+                    alert(`서버 오류: ${error}`);
+                }
+            };
+
+            const sendOTP = async () => {
+                const hp = document.getElementById('hp').value;
+                try {
+                    const response = await fetch('http://localhost:4000/otp/sendOTP', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `hp=${hp}`
+                    });
+                    if (response.ok) {
+                        alert('인증번호가 전송되었습니다');
+                    } else {
+                        throw new Error('전송 실패');
+                    }
+                } catch (error) {
+                    console.error('Error sending OTP:', error);
+                    alert('인증번호를 전송하는 데 실패했습니다.');
+                }
+            };
+
+            const sendit = async (event) => {
+                event.preventDefault();
+                const userid = document.getElementById('userid').value;
+                const userpw = document.getElementById('userpw').value;
+                const userpw_re = document.getElementById('userpw_re').value;
+                const name = document.getElementById('name').value;
+                const hp = document.getElementById('hp').value;
+                const email = document.getElementById('email').value;
+                const ssn = document.getElementById('ssn').value;
+                const address = document.getElementById('address').value;
+
+                try {
+                    const response = await fetch('http://localhost:4000/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userid, userpw, name, hp, email, ssn, address })
+                    });
+
+                    const data = await response.json();
+                    console.log('data', data)
+
+                    if (data.success) {
+                        alert('회원가입 완료 되었습니다!');
+                        window.location.href = 'http://127.0.0.1:5500/index.html';
+                    } else {
+                        alert('회원가입 실패');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('회원가입 도중 오류가 발생했습니다.');
+                }
+            };
+
+            const verifyOTP = async () => {
+                const otpInput = document.getElementById('otp').value.trim();
+                const signupButton = document.getElementById('signupButton');
+                const otpStatusMessage = document.getElementById('otpStatusMessage');
+                const hp = document.getElementById('hp').value;
+
+                if (otpInput.length === 6) {
+                    try {
+                        const response = await fetch('http://localhost:4000/otp/verifyOTP', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `hp=${hp}&otp=${otpInput}`
+                        });
+
+                        if (response.ok) {
+                            signupButton.removeAttribute('disabled');
+                            otpStatusMessage.textContent = '인증이 완료되었습니다.';
+                            otpStatusMessage.style.color = 'green';
+                        } else {
+                            otpStatusMessage.textContent = '인증번호가 올바르지 않습니다. 인증번호를 확인하세요.';
+                            otpStatusMessage.style.color = 'red';
+                            signupButton.setAttribute('disabled', 'disabled');
+                        }
+                    } catch (error) {
+                        console.error('Error verifying OTP:', error);
+                        otpStatusMessage.textContent = '인증 도중 오류가 발생했습니다.';
+                        otpStatusMessage.style.color = 'red';
+                        signupButton.setAttribute('disabled', 'disabled');
+                    }
+                } else {
+                    signupButton.setAttribute('disabled', 'disabled');
+                    otpStatusMessage.textContent = '';
+                }
+            };
+            document.getElementById('otpButton').addEventListener('click', sendOTP);
+            document.getElementById('otp').addEventListener('input', verifyOTP);
+            document.getElementById('signupButton').addEventListener('click', sendit);
+            document.getElementById('checkButton').addEventListener('click', checkUserId);
+        });
+    </script>
+</body>
+</html>

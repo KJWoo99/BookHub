@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/style.css">
+    <title>URL 미리보기</title>
+    <style>
+        .body {
+            background-color: #f1f1f1;
+        }
+        
+        .grid-container {
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 20px;
+        }
+        .preview {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .book-frame {
+            border: none;
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container" id="previewGrid"></div>
+
+    <script>
+        function fetchUserRecentURLs() {
+            var token = localStorage.getItem('token');
+            if (!token) {
+                console.error('토큰이 없습니다. 로그인하세요.');
+                return;
+            }
+
+            fetch("http://localhost:4000/book/view", {
+                method: "GET",
+                headers: {
+                    'Authorization': `Bearer ${token}` // JWT 토큰을 요청 헤더에 추가
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('요청 실패: ' + response.status + ' ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayURLPreviews(data.recentBooks);
+            })
+            .catch(error => {
+                console.error('요청 실패:', error);
+            });
+        }
+
+        function displayURLPreviews(urls) {
+            var gridContainer = document.getElementById("previewGrid"); // 미리보기 그리드 컨테이너
+            gridContainer.innerHTML = ""; // 기존 미리보기 삭제
+            urls.forEach(function(url) { // URL 목록을 순회하며 미리보기 추가
+                var preview = document.createElement("div"); // 미리보기 요소 생성
+                preview.classList.add("preview"); // 미리보기 클래스 추가
+                var embed = document.createElement("embed"); // iframe 대신 embed 요소 사용
+                embed.src = url; // URL 설정
+                embed.type = "text/html"; // 타입 설정
+                embed.classList.add("book-frame"); // 미리보기 프레임 클래스 추가
+                preview.appendChild(embed); // 미리보기에 프레임 추가
+                gridContainer.appendChild(preview); // 그리드 컨테이너에 미리보기 추가
+            });
+        }
+
+        // 페이지 로드 시 최근 본 책 URL을 가져옵니다.
+        window.onload = function() {
+            fetchUserRecentURLs();
+        }
+    </script>
+</body>
+</html>
