@@ -2,6 +2,30 @@
 
 **Book Hub** is a web application that provides integrated access to book information from major public libraries in **Seoul** (Gangnam-gu, Gangdong-gu, Mapo-gu, Yeongdeungpo-gu). Users can **search for book titles** and immediately check the list of libraries that hold the book and its **availability status**. The **AI search feature** also allows users to easily check the **content and summary** of the books. Additionally, the user's **recent search history** can be managed through the **My Page** feature.
 
+## 🌟 Main Features
+- **Book Search**: Search for books and check availability across multiple libraries.
+- **AI-Based Book Summaries**: Get summaries of books based on entered keywords.
+- **Recently Viewed Books**: Automatically recorded recently searched books in My Page.
+- **Book Details**: View detailed information and availability status of searched books.
+- **User Information Management**: Manage your email, phone number, address, and other personal information from My Page.
+
+  
+## 🛠️ Technology Stack
+
+### 🎨 Frontend
+- HTML
+- CSS
+
+### 🖥️ Backend
+- Node.js
+
+### 🗄️ Database
+- MongoDB
+
+### 🚀 Deployment
+- OpenAI API
+
+
 ## 🚀 Key Features
 
 ### 1. Login Page
@@ -43,24 +67,4 @@ Log in to Book Hub by entering your ID and password. New users can create an acc
 
 
 
-## 🛠️ Technology Stack
 
-### 🎨 Frontend
-- HTML
-- CSS
-
-### 🖥️ Backend
-- Node.js
-
-### 🗄️ Database
-- MongoDB
-
-### 🚀 Deployment
-- OpenAI API
-
-## 🌟 Main Features
-- **Book Search**: Search for books and check availability across multiple libraries.
-- **AI-Based Book Summaries**: Get summaries of books based on entered keywords.
-- **Recently Viewed Books**: Automatically recorded recently searched books in My Page.
-- **Book Details**: View detailed information and availability status of searched books.
-- **User Information Management**: Manage your email, phone number, address, and other personal information from My Page.
