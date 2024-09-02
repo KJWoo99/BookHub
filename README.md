@@ -40,17 +40,23 @@ Log in to Book Hub by entering your ID and password. New users can create an acc
 
 </details>
 
+
+
+
 ## 🛠️ Technology Stack
 
-### Frontend
-- **HTML**: Defines the structure of web pages.
-- **CSS**: Styles web pages to enhance user experience.
+### 🎨 Frontend
+- HTML
+- CSS
 
-### Backend
-- **Node.js**: Handles server-side logic, used for building fast and scalable network applications.
+### 🖥️ Backend
+- Node.js
 
-### Database
-- **MongoDB**: A NoSQL database used for storing book information and user data.
+### 🗄️ Database
+- MongoDB
+
+### 🚀 Deployment
+- OpenAI API
 
 ## 🌟 Main Features
 - **Book Search**: Search for books and check availability across multiple libraries.
