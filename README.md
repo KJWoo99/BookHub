@@ -34,11 +34,11 @@
     <td align="center"><img src="https://github.com/user-attachments/assets/a170594d-d5fd-4833-bcb6-a1703d5580c1" width="200" /><br><b>AI-Powered Book Recommendations and Summaries</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="https://github.com/user-attachments/assets/ef6fd492-67bd-4007-8f17-c958bfbd6808" width="200" /><br><b>Recently Added</b></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/ef6fd492-67bd-4007-8f17-c958bfbd6808" width="200" /><br><b>Recently Added Books</b></td>
     <td align="center"><img src="https://github.com/user-attachments/assets/5d737005-708d-46db-b56e-b8c4d93b68d8" width="200" /><br><b>Popular Books</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="https://github.com/user-attachments/assets/48e91a27-9983-42e8-9bed-46c7bef83c6b" width="200" /><br><b>Book Details</b></td>
+    <td align="center"><img src="https://github.com/user-attachments/assets/48e91a27-9983-42e8-9bed-46c7bef83c6b" width="200" /><br><b>Book Search</b></td>
     <td align="center"><img src="https://github.com/user-attachments/assets/e9ed9da9-5317-4ebf-87db-d17c084d2545" width="200" /><br><b>My Page</b></td>
   </tr>
   <tr>
